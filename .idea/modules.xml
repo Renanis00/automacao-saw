@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/Automação webdriver.iml" filepath="$PROJECT_DIR$/.idea/Automação webdriver.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TesteAutomacao/SAW.iml" filepath="$PROJECT_DIR$/TesteAutomacao/SAW.iml" />
+    </modules>
+  </component>
+</project>

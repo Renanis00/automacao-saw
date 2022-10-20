@@ -1,0 +1,126 @@
+package managers;
+
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+
+import browserFactory.WebDriverFactory;
+import enums.DriverType;
+
+public class WebDriverManager {
+	private WebDriver driver;
+	private static DriverType driverType;
+	private static final String CHROME_DRIVER_PROPERTY = "webdriver.chrome.driver";
+	//private static final String CHROME_DRIVER_PROPERTY = "driver";
+	private static final String FIREFOX_DRIVER_PROPERTY = "webdriver.gecko.driver";
+	private static final String PHANTOM_DRIVER_PROPERTY = "phantomjs.binary.path";
+
+	public WebDriverManager() {
+		driverType = FileReaderManager.getInstance().getConfigReader().getBrowser();
+	}
+
+	// =======================================================
+
+	public WebDriver getDriver() {
+		if (driver == null)
+			driver = criarDriver();
+		return driver;
+	}
+
+	// ==========================================================
+	/**
+	 * Metodo que instaci WebDriverFactory para rodar driver das variaveis de
+	 * ambiente via linha de comando
+	 * 
+	 * 
+	 * /
+	 // @param para rodar no terminal: mvn clean test -Ddriver=chrome
+	 /*             -Dcucumber.options="--tags '@nomedaTag'"
+	 * 
+	 * 
+	 * @return driver.
+	 */
+
+//	public WebDriver getDriver() {
+//		return new WebDriverFactory().build(System.getProperty("driver"));
+//	}
+
+	public WebDriver criarDriver() {
+
+		switch (driverType) {
+		case FIREFOX:
+			System.setProperty(FIREFOX_DRIVER_PROPERTY,
+					FileReaderManager.getInstance().getConfigReader().getCaminhoDriverFF());
+			driver = new FirefoxDriver();
+			break;
+		case CHROME:
+			System.setProperty(CHROME_DRIVER_PROPERTY,
+					FileReaderManager.getInstance().getConfigReader().getCaminhoDriverChrome());
+
+			ChromeOptions opt = new ChromeOptions();
+			opt.setHeadless(true);
+			opt.addArguments("window-size=" + getResolution());
+			opt.addArguments("--headless");
+			driver = new ChromeDriver(opt);
+			break;
+			
+		case CHROMEHL:
+
+			System.setProperty(CHROME_DRIVER_PROPERTY,
+					FileReaderManager.getInstance().getConfigReader().getCaminhoDriverChrome());
+
+				ChromeOptions options = new ChromeOptions();
+				options.setHeadless(true);
+				options.addArguments("window-size=" + getResolution());
+			    //options.addArguments("--window-size=1920,1080" + getResolution());
+				options.addArguments("--headless");
+				System.setProperty("webdriver.chrome.whitelistedIps", "");
+				driver = new ChromeDriver(options);
+			break;
+
+
+
+		case PHANTOM:
+			System.setProperty(PHANTOM_DRIVER_PROPERTY,
+					FileReaderManager.getInstance().getConfigReader().getCaminhoDriverPhantom());
+			driver = new PhantomJSDriver();
+			break;
+		case INTERNETEXPLORER:
+			driver = new InternetExplorerDriver();
+			break;
+		}
+
+		driver.manage();
+		driver.manage().timeouts().implicitlyWait(FileReaderManager.getInstance().getConfigReader().getWait(),
+				TimeUnit.SECONDS);
+		return driver;
+	}
+
+	public void closeDriver() {
+		driver.quit();
+	}
+	
+	
+	 private String getResolution() {
+	        try {
+	            String resolution = System.getProperty("resolution");
+	            if (resolution.isEmpty()) {
+	                return "1366x768";
+	            } else {
+	                return resolution;
+	            }
+	        } catch (Exception error) {
+	            return "1366x768";
+	        }
+	    }
+	
+	
+	
+	
+	
+}

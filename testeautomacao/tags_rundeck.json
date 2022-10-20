@@ -1,0 +1,23 @@
+[
+  {"name":"enviarXML", "value": "enviarXML", "selected": true},
+  {"name":"35SPSADTaguardando", "value": "35SPSADTaguardando"},
+  {"name":"35InternacaoAutorizada", "value": "35InternacaoAutorizada"},
+  {"name":"35cadastraGuiaDeProrrogacao", "value": "35cadastraGuiaDeProrrogacao"},
+  {"name":"35ConsultaAutorizada", "value": "35ConsultaAutorizada"},
+  {"name":"35ConsultaNegada", "value": "35ConsultaNegada"},
+  {"name":"35SPSADTautorizada", "value": "35SPSADTautorizada"},
+  {"name":"35SPSADTnegada", "value": "35SPSADTnegada"},
+  {"name":"174SPSADTAutorizada", "value": "174SPSADTAutorizada"},
+  {"name":"174SPSADTEmAnalise", "value": "174SPSADTEmAnalise"},
+  {"name":"174SPSADTNegada", "value": "174SPSADTNegada"},
+  {"name":"174ConsultaAutorizada", "value": "174ConsultaAutorizada"},
+  {"name":"174ConsultaNegada", "value": "174ConsultaNegada"},
+  {"name":"174InternacaoAutorizada", "value": "174InternacaoAutorizada"},
+  {"name":"2007InternacaoAutorizada", "value": "2007InternacaoAutorizada"},
+  {"name":"2007SPSADTemAnalise", "value": "2007SPSADTemAnalise"},
+  {"name":"2007Consulta", "value": "2007Consulta"},
+  {"name":"865EletivaAutorizada", "value": "865EletivaAutorizada"},
+  {"name":"865SPSADTAutorizada", "value": "865SPSADTAutorizada"},
+  {"name":"865InternacaoAutorizada", "value": "865InternacaoAutorizada"},
+  {"name":"865cadastraGuiaDeProrrogacao", "value": "865cadastraGuiaDeProrrogacao"}
+]

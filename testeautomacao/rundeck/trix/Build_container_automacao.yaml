@@ -1,0 +1,36 @@
+- defaultTab: nodes
+  description: Job de build do container Docker BDD - Automação de testes
+  executionEnabled: true
+  group: BDD
+  id: 52b8a19a-8acd-48b1-a751-1b3a3cfd93dc
+  loglevel: INFO
+  name: Build container automacao
+  nodeFilterEditable: false
+  options:
+  - description: https://www.ubuntuupdates.org/package/google_chrome/stable/main/base/google-chrome-stable
+    label: Chrome Version
+    name: ChromeVersion
+  - description: https://chromedriver.storage.googleapis.com/
+    label: Chrome Driver Version
+    name: ChromeDriverVersion
+  plugins:
+    ExecutionLifecycle: null
+  scheduleEnabled: true
+  sequence:
+    commands:
+    - description: Atualizando repositório
+      script: |-
+        #!/bin/bash
+
+        echo "Verificando por novas atualizações..."
+
+        cd /app/testeautomacao
+        git reset --hard
+        git pull && echo "... Repositório atualizado"
+    - description: Image Build Docker
+      exec: docker build --build-arg CHROME_VERSION=${option.ChromeVersion} --build-arg
+        CHROME_DRIVER_VERSION=${option.ChromeDriverVersion} -t maven-automacao -f
+        '/app/testeautomacao/docker/Dockerfile' /app/testeautomacao
+    keepgoing: false
+    strategy: node-first
+  uuid: 52b8a19a-8acd-48b1-a751-1b3a3cfd93dc

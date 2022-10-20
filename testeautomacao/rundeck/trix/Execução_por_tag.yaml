@@ -1,0 +1,81 @@
+- defaultTab: output
+  description: Job para execução de teste BDD baseado em cenários
+  executionEnabled: true
+  group: BDD
+  id: 2deb9168-2c75-4708-b5a1-f77e166e0c3d
+  loglevel: INFO
+  multipleExecutions: true
+  name: Execução por tag
+  nodeFilterEditable: false
+  options:
+  - description: Informe o ambiente em que deseja executar os testes.
+    name: AMBIENTE
+    required: true
+    values:
+    - HML - https://sawhomologacao.trixti.com.br/saw/
+    - HML_INTERNO - https://192.168.12.43/saw/
+    valuesListDelimiter: ','
+  - delimiter: ','
+    description: Informe a tag do teste para execução
+    multivalueAllSelected: true
+    multivalued: true
+    name: TAG
+    required: true
+    values:
+    - fluxo33
+    valuesListDelimiter: '|'
+  plugins:
+    ExecutionLifecycle: null
+  scheduleEnabled: true
+  sequence:
+    commands:
+    - description: Visualização das entradas
+      script: |-
+        #!/bin/bash
+
+        echo "AMBIENTE: @option.AMBIENTE@"
+        echo "TAG: @option.TAG@"
+    - description: Verificando por atualizações
+      script: |-
+        #!/bin/bash
+
+        echo "Verificando por novas atualizações..."
+
+        cd /app/testeautomacao
+        git reset --hard
+        git pull && echo "... Repositório atualizado"
+    - description: Configuração do ambiente
+      script: |
+        #!/bin/bash
+
+        ambiente=$(echo "@option.AMBIENTE@" | awk '{print $3}')
+
+        echo "Alterando ambiente..."
+        sed -i 's,urlHm=.*,urlHm='$ambiente',g' /app/testeautomacao/configs/Configuration.properties && echo "... Alterado com sucesso."
+
+        echo "Alterando path reportConfigPath..."
+        sed -i 's,reportConfigPath=.*,reportConfigPath=/usr/src/configs/extent-config.xml,g' /app/testeautomacao/configs/Configuration.properties && echo "... Alterado com sucesso."
+
+        echo "Alterando path do driverChrome..."
+        sed -i 's,driverChrome=.*,driverChrome=/usr/bin/chromedriver,g' /app/testeautomacao/configs/Configuration.properties && echo "... Alterado com sucesso."
+    - description: Execução do cenário de teste
+      script: |-
+        #!/bin/bash
+
+        tag="@option.TAG@"
+        tag=$(echo $tag | sed -e 's/\,/\,@/g')
+        rm -rf /app/testeautomacao/target/cucumber-reports
+        docker run --rm --user rundeck -e MAVEN_CONFIG=/tmp/.m2 -v /app/repo_maven/:/home/rundeck/.m2 -v /app/repo_maven/:/tmp/.m2 -v /app/testeautomacao/:/usr/src -w /usr/src maven-automacao mvn test -Ddriver=chrome -Dcucumber.options="--tags '@$tag'"
+    - description: Disponibilização do relatório
+      script: |-
+        #!/bin/bash
+
+        echo "<--- DISPONIBILIZANDO RELATORIO --->"
+        execucao=$(date "+%d-%m-%Y_%H-%M")
+        cp -p -a /app/testeautomacao/target/cucumber-reports /app/web/data/reports/RelatoriosDeTestes/Execucao_$execucao
+        sed -i 's,/usr/src/target/cucumber-reports,.,g' /app/web/data/reports/RelatoriosDeTestes/Execucao_$execucao/report.html
+
+        echo "Link do relatorio: https://rundesk.trixti.com.br/RelatoriosDeTestes/Execucao_$execucao/report.html"
+    keepgoing: true
+    strategy: node-first
+  uuid: 2deb9168-2c75-4708-b5a1-f77e166e0c3d
